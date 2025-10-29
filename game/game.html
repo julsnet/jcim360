@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PM Runner</title>
+    <style>
+        #game-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: #f0f0f0;
+            border-top: 1px solid #ccc;
+            overflow: hidden;
+            font-family: monospace;
+            user-select: none;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #player {
+            position: absolute;
+            bottom: 20px;
+            left: 50px;
+            font-size: 24px;
+            transition: none;
+        }
+
+        .obstacle,
+        .collectible,
+        .bonus {
+            position: absolute;
+            font-size: 20px;
+        }
+
+        #score {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        #instructions {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: red;
+            background-color: rgba(255, 255, 255, 1);
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+            font-weight: bold;
+            z-index: 999
+        }
+    </style>
+</head>
+
+<body>
+    <footer id="game-footer">
+        <div id="game-container">
+            <div id="player">PM</div>
+            <div id="score">Score: 0</div>
+            <div id="instructions">↑/Space=Jump ←→ Move. Avoid 🐛, catch 💡/🎯! ALT+Enter=Restart</div>
+            <div class="game-over">Game Over! ALT+Enter to restart.</div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('game-container');
+            const player = document.getElementById('player');
+            const scoreDisplay = document.getElementById('score');
+            const gameOverDisplay = document.querySelector('.game-over');
+            let score = 0;
+            let isJumping = false;
+            let gameRunning = true;
+            let playerLeft = 50;
+            let playerBottom = 20;
+            let gameSpeed = 2;
+            let gravity = 0.1;
+            let jumpForce = 10;
+            let velocityY = 0;
+            let maxJumpHeight = 80;
+            let obstacles = [];
+            let collectibles = [];
+            let bonuses = [];
+            let obstacleTimer = 0;
+            let collectibleTimer = 0;
+            let bonusTimer = 0;
+            let obstacleInterval = 150;
+            let collectibleInterval = 180;
+            let bonusInterval = 450;
+            let minObstacleInterval = 80; // Intervalle minimum pour éviter le spam
+
+            player.style.left = playerLeft + 'px';
+            player.style.bottom = playerBottom + 'px';
+
+            // Écouteurs d'événements
+            document.addEventListener('keydown', (e) => {
+                if (!gameRunning && e.altKey && e.key === 'Enter') {
+                    restartGame();
+                    return;
+                }
+                if (!gameRunning) return;
+                if (e.code === 'ArrowLeft' && playerLeft > 0) {
+                    playerLeft -= 20;
+                    player.style.left = playerLeft + 'px';
+                }
+                if (e.code === 'ArrowRight' && playerLeft < container.offsetWidth - 30) {
+                    playerLeft += 20;
+                    player.style.left = playerLeft + 'px';
+                }
+                if ((e.code === 'ArrowUp' || e.code === 'Space') && !isJumping) {
+                    isJumping = true;
+                    velocityY = jumpForce;
+                }
+            });
+
+            // Fonction pour redémarrer le jeu
+            function restartGame() {
+                obstacles.forEach(obs => obs.element.remove());
+                collectibles.forEach(col => col.element.remove());
+                bonuses.forEach(bonus => bonus.element.remove());
+
+                obstacles = [];
+                collectibles = [];
+                bonuses = [];
+                score = 0;
+                scoreDisplay.textContent = `Score: ${score}`;
+                gameSpeed = 2;
+                obstacleInterval = 150;
+                collectibleInterval = 180;
+                bonusInterval = 450;
+                playerLeft = 50;
+                playerBottom = 20;
+                player.style.left = playerLeft + 'px';
+                player.style.bottom = playerBottom + 'px';
+                gameOverDisplay.style.display = 'none';
+                gameRunning = true;
+                gameLoop();
+            }
+
+            // Saut en arc de cercle, avec descente ralentie
+            function updateJump() {
+                if (isJumping) {
+                    playerBottom += velocityY;
+                    if (playerBottom > maxJumpHeight) {
+                        playerBottom = maxJumpHeight;
+                        velocityY = 0;
+                    }
+                    velocityY -= gravity;
+                    player.style.bottom = playerBottom + 'px';
+                    if (playerBottom <= 20) {
+                        playerBottom = 20;
+                        player.style.bottom = playerBottom + 'px';
+                        isJumping = false;
+                        velocityY = 0;
+                    }
+                }
+            }
+
+            // Création d'obstacles (bugs)
+            function createObstacle() {
+                if (!gameRunning) return;
+                const y = 20;
+                const obstacle = document.createElement('div');
+                obstacle.className = 'obstacle';
+                obstacle.innerHTML = '🐛';
+                obstacle.style.left = container.offsetWidth + 'px';
+                obstacle.style.bottom = y + 'px';
+                container.appendChild(obstacle);
+                obstacles.push({ element: obstacle, x: container.offsetWidth, y });
+            }
+
+            // Création de collectibles (idées)
+            function createCollectible() {
+                if (!gameRunning) return;
+                const y = 20;
+                const collectible = document.createElement('div');
+                collectible.className = 'collectible';
+                collectible.innerHTML = '💡';
+                collectible.style.left = container.offsetWidth + 'px';
+                collectible.style.bottom = y + 'px';
+                container.appendChild(collectible);
+                collectibles.push({ element: collectible, x: container.offsetWidth, y });
+            }
+
+            // Création de bonus (cibles en l'air)
+            function createBonus() {
+                if (!gameRunning) return;
+                const y = 20 + Math.floor(Math.random() * 50);
+                const bonus = document.createElement('div');
+                bonus.className = 'bonus';
+                bonus.innerHTML = '🎯';
+                bonus.style.left = container.offsetWidth + 'px';
+                bonus.style.bottom = y + 'px';
+                container.appendChild(bonus);
+                bonuses.push({ element: bonus, x: container.offsetWidth, y });
+            }
+
+            // Mise à jour des positions et collisions
+            function updatePositions() {
+                if (!gameRunning) return;
+                obstacles.forEach((obs, index) => {
+                    obs.x -= gameSpeed;
+                    obs.element.style.left = obs.x + 'px';
+                    if (
+                        obs.x < playerLeft + 20 &&
+                        obs.x + 20 > playerLeft &&
+                        obs.y === playerBottom
+                    ) {
+                        endGame();
+                    }
+                    if (obs.x < -20) {
+                        obs.element.remove();
+                        obstacles.splice(index, 1);
+                    }
+                });
+                collectibles.forEach((col, index) => {
+                    col.x -= gameSpeed;
+                    col.element.style.left = col.x + 'px';
+                    if (
+                        col.x < playerLeft + 20 &&
+                        col.x + 20 > playerLeft &&
+                        col.y === playerBottom
+                    ) {
+                        score += 10;
+                        scoreDisplay.textContent = `Score: ${score}`;
+                        col.element.remove();
+                        collectibles.splice(index, 1);
+                    }
+                    if (col.x < -20) {
+                        col.element.remove();
+                        collectibles.splice(index, 1);
+                    }
+                });
+                bonuses.forEach((bonus, index) => {
+                    bonus.x -= gameSpeed;
+                    bonus.element.style.left = bonus.x + 'px';
+                    if (
+                        bonus.x < playerLeft + 20 &&
+                        bonus.x + 20 > playerLeft &&
+                        Math.abs(bonus.y - playerBottom) < 20
+                    ) {
+                        score += 30;
+                        scoreDisplay.textContent = `Score: ${score}`;
+                        bonus.element.remove();
+                        bonuses.splice(index, 1);
+                    }
+                    if (bonus.x < -20) {
+                        bonus.element.remove();
+                        bonuses.splice(index, 1);
+                    }
+                });
+            }
+
+            // Fin du jeu
+            function endGame() {
+                gameRunning = false;
+                gameOverDisplay.style.display = 'block';
+            }
+
+            // Boucle de jeu
+            function gameLoop() {
+                if (!gameRunning) return;
+                updateJump();
+                updatePositions();
+
+                // Augmentation progressive de la difficulté
+                obstacleTimer++;
+                collectibleTimer++;
+                bonusTimer++;
+
+                // Génération des obstacles (de plus en plus fréquents, mais jamais trop)
+                if (obstacleTimer >= obstacleInterval) {
+                    createObstacle();
+                    obstacleTimer = 0;
+                    // Réduction progressive de l'intervalle entre les obstacles
+                    if (score >= 50 && obstacleInterval > minObstacleInterval) {
+                        obstacleInterval = Math.max(minObstacleInterval, obstacleInterval - 0.5);
+                    }
+                }
+
+                // Génération des collectibles
+                if (collectibleTimer >= collectibleInterval) {
+                    createCollectible();
+                    collectibleTimer = 0;
+                    // Les collectibles restent bien espacés
+                    if (score >= 100 && collectibleInterval > 120) {
+                        collectibleInterval = Math.max(120, collectibleInterval - 0.3);
+                    }
+                }
+
+                // Génération des bonus
+                if (bonusTimer >= bonusInterval) {
+                    createBonus();
+                    bonusTimer = 0;
+                }
+
+                // Augmentation de la vitesse par paliers
+                if (score >= 100 && gameSpeed < 3) gameSpeed = 3;
+                if (score >= 200 && gameSpeed < 4) gameSpeed = 4;
+                if (score >= 350 && gameSpeed < 5) gameSpeed = 5;
+                if (score >= 500 && gameSpeed < 6) gameSpeed = 6;
+                if (score >= 700 && gameSpeed < 7) gameSpeed = 7;
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            // Démarrage
+            gameLoop();
+        });
+    </script>
+</body>
+
+</html>

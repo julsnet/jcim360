@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="noindex" name="robots" />
+    <title>Julien Cimetière - Marketing &amp; Tech Expert</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <style>
+        .vanta-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .light-theme {
+            --tw-text-opacity: 1;
+            color: rgba(17, 24, 39, var(--tw-text-opacity));
+        }
+
+        .light-theme .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #111827;
+        }
+
+        .light-theme .text-blue-300 {
+            color: #3b82f6;
+        }
+
+        .light-theme .bg-blue-500\/20 {
+            background-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .light-theme h2.text-3xl {
+            color: #111827;
+        }
+
+        .light-theme section>h2 {
+            color: #111827;
+        }
+
+        .light-theme .text-gray-100 {
+            color: #111827;
+        }
+
+        .light-theme #experience-fade {
+            background: linear-gradient(to top, rgba(243, 244, 246, 0.95), transparent);
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #3b82f6;
+        }
+
+        #experience-container .experience-controls {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 12px;
+            display: flex;
+            justify-content: center;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        #experience-container .experience-controls button {
+            pointer-events: auto;
+        }
+
+        #experience-container.expanded {
+            max-height: none !important;
+        }
+
+        #experience-container.expanded .experience-controls {
+            position: static;
+            margin-top: 16px;
+            z-index: 5;
+            pointer-events: auto;
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            html {
+                scroll-behavior: smooth;
+            }
+        }
+
+        #lang-switch span {
+            display: inline-block;
+            min-width: 36px;
+            text-align: center;
+        }
+
+        #lang-switch[aria-pressed="true"] {
+            background-color: rgba(59, 130, 246, 0.15);
+        }
+
+        #main-nav .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: inherit;
+            text-decoration: none;
+            transition: transform 160ms ease, background-color 160ms ease, color 160ms ease;
+        }
+
+        #main-nav .nav-link i {
+            opacity: 0.9;
+        }
+
+        #main-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 12%;
+            right: 12%;
+            bottom: -6px;
+            height: 3px;
+            background: linear-gradient(90deg, #60a5fa, #3b82f6 60%);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 220ms cubic-bezier(.2, .9, .2, 1);
+            border-radius: 2px;
+            box-shadow: 0 6px 14px rgba(59, 130, 246, 0.12);
+        }
+
+        #main-nav .nav-link:hover {
+            transform: translateY(-3px);
+            background-color: rgba(59, 130, 246, 0.06);
+        }
+
+        #main-nav .nav-link:focus {
+            outline: none;
+            box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.12);
+        }
+
+        #main-nav .nav-link:hover::after,
+        #main-nav .nav-link.active::after {
+            transform: scaleX(1);
+        }
+
+        #main-nav .nav-link.active {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), transparent);
+        }
+
+        #lang-switch a[role="button"] {
+            box-shadow: 0 6px 18px rgba(2, 6, 23, 0.4);
+            transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+        }
+
+        #lang-switch a[role="button"]:hover {
+            transform: translateY(-2px);
+        }
+
+        #lang-switch a[role="button"]:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.18);
+        }
+
+        #game-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: #f0f0f0;
+            border-top: 1px solid #ccc;
+            overflow: hidden;
+            font-family: monospace;
+            user-select: none;
+            display: none;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #player {
+            position: absolute;
+            bottom: 20px;
+            left: 150px;
+            font-size: 24px;
+            transition: none;
+            color: blue;
+        }
+
+        .obstacle,
+        .collectible,
+        .bonus {
+            position: absolute;
+            font-size: 20px;
+        }
+
+        #score {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        #instructions {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: red;
+            background-color: rgba(255, 255, 255, 1);
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+            font-weight: bold;
+            z-index: 999;
+        }
+    </style>
+
+</head>
+
+<body class="min-h-screen text-gray-100 dark:text-gray-100">
+    <div class="vanta-bg" id="vanta-bg"></div>
+    <button id="theme-switch" aria-label="Toggle theme" aria-pressed="false"
+        class="fixed top-4 right-4 bg-gray-800/50 backdrop-blur-sm p-2 rounded-full border border-gray-400 hover:bg-gray-700 transition z-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        title="Toggle theme (light / dark / system)">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-yellow-300 hidden" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path
+                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </svg>
+        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-800 hidden" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+    <!-- Language switch placed near theme switch (FR / EN) - two-button pill -->
+    <div id="lang-switch" class="fixed top-4 right-20 z-50">
+        <div
+            class="flex items-center space-x-1 bg-transparent p-1 rounded-full backdrop-blur-sm border border-gray-400">
+            <a id="lang-fr" href="index.html" role="button" aria-pressed="false"
+                class="px-3 py-1 rounded-full text-sm font-medium bg-gray-800/50 text-gray-200 hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+                FR
+            </a>
+            <a id="lang-en" href="index-EN.html" role="button" aria-pressed="false"
+                class="px-3 py-1 rounded-full text-sm font-medium bg-blue-500 text-white transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+                EN
+            </a>
+        </div>
+    </div>
+    <div class="container mx-auto px-4 py-12 max-w-6xl">
+        <header class="flex flex-col md:flex-row justify-between items-center mb-16 glass-card p-6 rounded-xl">
+            <div class="text-center md:text-left mb-6 md:mb-0 flex flex-col items-center md:items-start">
+                <div class="flex items-center mb-2">
+                    <h1 class="text-4xl font-bold">Julien Cimetière</h1>
+                </div>
+                <h2 class="text-xl text-blue-300">Product & Growth Marketing | B2B | SaaS </h2>
+                <div class="flex justify-center md:justify-start space-x-4 mt-4">
+                    <a class="hover:text-blue-300 transition" href="mailto:jcimetiere@gmail.com">
+                        <i data-feather="mail"></i>
+                    </a>
+                    <a class="hover:text-blue-300 transition" href="tel:+33640982868">
+                        <i data-feather="phone"></i>
+                    </a>
+                    <a class="hover:text-blue-300 transition" href="https://www.linkedin.com/in/juliencimetiere/"
+                        target="_blank">
+                        <i data-feather="linkedin"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="nav-toggle"
+                    class="md:hidden p-2 rounded-md bg-gray-800/30 hover:bg-gray-800/50 focus:outline-none"
+                    aria-label="Toggle navigation" aria-expanded="false">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+                <nav id="main-nav" class="hidden md:flex items-center space-x-4" aria-label="Primary">
+                    <a class="nav-link" href="#experience"><i data-feather="briefcase"
+                            class="w-4 h-4"></i><span>Experience</span></a>
+                    <a class="nav-link" href="#skills"><i data-feather="zap" class="w-4 h-4"></i><span>Skills</span></a>
+                    <a class="nav-link" href="#education"><i data-feather="book"
+                            class="w-4 h-4"></i><span>Education</span></a>
+                    <a class="nav-link" href="#contact"><i data-feather="mail"
+                            class="w-4 h-4"></i><span>Contact</span></a>
+                </nav>
+            </div>
+            <div id="mobile-nav" class="md:hidden mt-4 hidden" aria-hidden="true">
+                <nav class="flex flex-col space-y-2" aria-label="Mobile Primary">
+                    <a class="px-4 py-2 rounded-lg hover:bg-blue-500/20 transition block"
+                        href="#experience">Experience</a>
+                    <a class="px-4 py-2 rounded-lg hover:bg-blue-500/20 transition block" href="#skills">Skills</a>
+                    <a class="px-4 py-2 rounded-lg hover:bg-blue-500/20 transition block"
+                        href="#education">Education</a>
+                    <a class="px-4 py-2 rounded-lg hover:bg-blue-500/20 transition block" href="#contact">Contact</a>
+                </nav>
+            </div>
+        </header>
+        <section class="glass-card p-8 rounded-xl mb-16">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/3 mb-8 md:mb-0 flex justify-center">
+                    <img alt="Profile" class="rounded-full w-48 h-48 object-cover border-4 border-blue-400/50"
+                        src="img/julien.png" />
+                </div>
+
+                <div class="md:w-2/3 md:pl-12">
+                    <h3 class="text-2xl font-semibold mb-4">About Me</h3>
+                    <p class="mb-4">Passionate about Tech and digital innovation, I have been working for 20 years at
+                        the intersection of marketing, sales, and product to maximize value creation and achieve
+                        objectives.</p>
+                    <p>Curious, client-focused, and data-driven, I use my experience to align marketing strategy with
+                        business goals by uniting cross-functional teams.</p>
+                    <div class="mt-6 flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-blue-500/20 rounded-full text-sm">Immediately available</span>
+                        <span class="px-3 py-1 bg-blue-500/20 rounded-full text-sm">Occasional remote work</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        Expériences
+        <section class="mb-16" id="experience">
+            <h2 class="text-3xl font-bold mb-8 text-center"><i data-feather="briefcase"
+                    class="w-6 h-6 inline-block mr-2"></i>Professional Experience</h2>
+            <div class="glass-card p-8 rounded-xl relative overflow-hidden" id="experience-container"
+                style="max-height: 800px;">
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent z-10 pointer-events-none"
+                    id="experience-fade"></div>
+                <div class="mb-12 relative pl-12 timeline-item">
+                    <div class="absolute left-0 top-0 h-full w-0.5 bg-blue-500"></div>
+                    <div class="flex flex-col md:flex-row justify-between mb-2">
+                        <h3 class="text-xl font-semibold">Proovup</h3>
+                        <span class="text-blue-300">10/2021 - Present | Lyon, France</span>
+                    </div>
+                    <p class="text-blue-300 mb-4">Marketing Strategy &amp; Operations / Co-founder CEO</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li>ESN and publisher of the Synrune platform for testing and deploying tailor-made AI use cases
+                        </li>
+                        <li>Technology and market watch, security and compliance (RGPD/GDPR, AI Act)</li>
+                        <li>Positioning and partnerships (club IA Digital League, data, RGPD/GDPR)</li>
+                        <li>Roadmap definition, user story definition and prioritization</li>
+                        <li>Platform Go-to-Market (pricing, materials, content, and Comms)</li>
+                        <li>Prospecting and marketing automation campaigns</li>
+                    </ul>
+                    <p class="mt-4 font-medium">📈 📈 €230K in service revenue in 2024</p>
+                </div>
+                <div class="mb-12 relative pl-12 timeline-item">
+                    <div class="absolute left-0 top-0 h-full w-0.5 bg-blue-500"></div>
+                    <div class="flex flex-col md:flex-row justify-between mb-2">
+                        <h3 class="text-xl font-semibold">Track'Innov</h3>
+                        <span class="text-blue-300">06/2022 - 08/2023 | Lyon, France</span>
+                    </div>
+                    <p class="text-blue-300 mb-4">Product Marketing &amp; Growth / Associate</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li>Joint venture Proovup: Prooverse SaaS solution to secure intellectual property of digital
+                            assets using blockchain</li>
+                        <li>Tech stack: React, TailWind, Smart Contract, Polygon/Ethereum</li>
+                        <li>Product Strategy: definition of positioning and product roadmap</li>
+                        <li>Go-to-Market: pricing, website, materials, lead generation campaigns</li>
+                        <li>Product Discovery: legal watch and competitor benchmark</li>
+                    </ul>
+                    <p class="mt-4 font-medium">🏆 Platform sold to the Ayming group (July 2023)</p>
+                </div>
+                <div class="mb-12 relative pl-12 timeline-item">
+                    <div class="absolute left-0 top-0 h-full w-0.5 bg-blue-500"></div>
+
+                    <div class="flex flex-col md:flex-row justify-between mb-2">
+                        <h3 class="text-xl font-semibold">Audros (Visiativ)</h3>
+                        <span class="text-blue-300">01/2005 - 03/2016 | Lyon, France</span>
+                    </div>
+                    <p class="text-blue-300 mb-4">Head of Marketing</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li>Publisher of PLM software for the industry</li>
+                        <li>Member of the steering committee, responsible for Marketing &amp; Communication strategy
+                        </li>
+                        <li>Budget management (€100K) and team management (3 people)</li>
+                        <li>Participation in the product roadmap with R&amp;D + UX/HMI Design</li>
+                        <li>Animation of the network of ERP and CAD resellers/integrators</li>
+                        <li>Management of websites and CRM (MQL, SQL pipeline)</li>
+                        <li>Organization of events (Kickoff, webinars, trade shows, conferences)</li>
+                    </ul>
+                    <p class="mt-4 font-medium">📈 600% growth: from €500K to €3.5M in revenue in 2015 (ARR > €1M)</p>
+                </div>
+                <div class="mb-12 relative pl-12 timeline-item">
+                    <div class="absolute left-0 top-0 h-full w-0.5 bg-blue-500"></div>
+
+                    <div class="flex flex-col md:flex-row justify-between mb-2">
+                        <h3 class="text-xl font-semibold">Visiativ</h3>
+                        <span class="text-blue-300">01/1999 - 03/2003 | Charbonnières, France</span>
+                    </div>
+                    <p class="text-blue-300 mb-4">Web Marketing Manager</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li>Publisher and integrator of CAD and PLM solutions for the industry</li>
+                        <li>Management of corporate websites and the client extranet</li>
+                        <li>Lead generation: e-mailing campaigns, SEO, advertising</li>
+                        <li>Creation of commercial support materials and sales enablement tools</li>
+                    </ul>
+                </div>
+                <div class="mb-12 relative pl-12 timeline-item">
+                    <div class="absolute left-0 top-0 h-full w-0.5 bg-blue-500"></div>
+
+                    <div class="flex flex-col md:flex-row justify-between mb-2">
+                        <h3 class="text-xl font-semibold">Viaparents</h3>
+                        <span class="text-blue-300">09/2015 - 10/2021 | Lyon, France</span>
+                    </div>
+                    <p class="text-blue-300 mb-4">Digital Marketing Strategy / Co-founder CEO</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li>Media agency with a website for activity recommendations between parents</li>
+                        <li>Tech stack: VueJS, Vuetify, Nuxt/PWA, Wordpress/API Rest</li>
+                        <li>User research, focus groups, market, and competitor watch</li>
+                        <li>Product vision and definition of platform specifications</li>
+                        <li>Tech watch, architecture choices, developer recruitment</li>
+                        <li>Launch and acquisition campaigns: SEO, Email, Social networks</li>
+                    </ul>
+                    <p class="mt-4 font-medium">🚀 +200 active influencers, +15K visits/day, 120 certified professionals
+                    </p>
+                </div>
+
+                <div class="experience-controls" aria-hidden="false">
+                    <button class="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition" id="show-more-btn"
+                        aria-expanded="false" aria-controls="experience-container">
+                        Show more
+                    </button>
+                </div>
+
+            </div>
+            <div class="relative text-center mt-8">
+            </div>
+
+        </section>
+        Formations
+        <section class="mb-16" id="education">
+            <h2 class="text-3xl font-bold mb-8 text-center"><i data-feather="book"
+                    class="w-6 h-6 inline-block mr-2"></i>Education &amp; Certifications</h2>
+            <div class="glass-card p-8 rounded-xl">
+                <div class="mb-8 relative pl-12 timeline-item">
+                    <div class="absolute left-0 top-0 h-full w-0.5 bg-blue-500"></div>
+                    <div class="flex flex-col md:flex-row justify-between mb-2">
+                        <h3 class="text-xl font-semibold">EM Lyon Business School</h3>
+                        <span class="text-blue-300">2003 - 2004 | Ecully, France</span>
+                    </div>
+                    <p class="text-blue-300 mb-4">Specialized Master (M.S) Marketing</p>
+                </div>
+                <div class="mb-8 relative pl-12 timeline-item">
+                    <div class="flex flex-col md:flex-row justify-between mb-2">
+                        <h3 class="text-xl font-semibold">IUP Management Lyon 1</h3>
+                        <span class="text-blue-300">1996 - 1999 | Villeurbanne, France</span>
+                    </div>
+                    <p class="text-blue-300 mb-4">Master's Degree in Business Management</p>
+                    <p class="mb-4">Université Claude Bernard</p>
+                    <p class="text-blue-300">ERASMUS Program - Business Administration</p>
+                    <p>Northumbria University, Newcastle, UK (6 months - 1998)</p>
+                </div>
+                <div class="flex flex-wrap gap-4">
+                    <div class="px-4 py-2 bg-blue-500/20 rounded-full">
+                        <span>CRM HubSpot Certification - HubSpot Academy (09/2025)</span>
+                    </div>
+                    <div class="px-4 py-2 bg-blue-500/20 rounded-full">
+                        <span>Product Management - MAESTRO (09/2025-12/2025 - In progress)</span>
+                    </div>
+                    <div class="px-4 py-2 bg-blue-500/20 rounded-full">
+                        <span>Inbound Marketing - HubSpot Academy (10/2025)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16" id="skills">
+            <h2 class="text-3xl font-bold mb-8 text-center"><i data-feather="zap"
+                    class="w-6 h-6 inline-block mr-2"></i>Skills &amp; Expertise</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glass-card p-6 rounded-xl">
+                    <h3 class="text-xl font-semibold mb-4 flex items-center">
+                        <i class="mr-2" data-feather="target"></i> Marketing &amp; Growth
+                    </h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="mr-2 text-blue-300 mt-1" data-feather="check-circle"></i>
+                            <span>Defining OKRs and action plans</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="mr-2 text-blue-300 mt-1" data-feather="check-circle"></i>
+                            <span>KPIs and conversion funnel with CRM</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="mr-2 text-blue-300 mt-1" data-feather="check-circle"></i>
+                            <span>Inbound and lead nurturing campaigns</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="mr-2 text-blue-300 mt-1" data-feather="check-circle"></i>
+                            <span>SEO: semantic cocoon, optimizations</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="mr-2 text-blue-300 mt-1" data-feather="check-circle"></i>
+                            <span>N8N automations and AI content</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="glass-card p-6 rounded-xl">
+                    <h3 class="text-xl font-semibold mb-4 flex items-center">
+                        <i class="mr-2" data-feather="code"></i> Product &amp; Digital
+                    </h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="mr-2 text-blue-300 mt-1" data-feather="check-circle"></i>
+                            <span>Problems → Solutions Approach</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="mr-2 text-blue-300 mt-1" data-feather="check-circle"></i>
+                            <span>Agile methods (Scrum / Kanban)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="mr-2 text-blue-300 mt-1" data-feather="check-circle"></i>
+                            <span>Cross-functional steering (PO, Dev, Sales, Management)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="mr-2 text-blue-300 mt-1" data-feather="check-circle"></i>
+                            <span>Client-centric and data-driven focus</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="mr-2 text-blue-300 mt-1" data-feather="check-circle"></i>
+                            <span>Front-end Development and API/No code</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="glass-card p-6 rounded-xl mt-8">
+                <h3 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="mr-2" data-feather="tool"></i> Tools
+                </h3>
+                <div class="flex flex-wrap gap-4">
+                    <div class="flex flex-col items-center">
+                        <i class="w-8 h-8 text-blue-300" data-feather="code"></i>
+                        <span>React</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <i class="w-8 h-8 text-blue-300" data-feather="code"></i>
+                        <span>VueJS</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <i class="w-8 h-8 text-blue-300" data-feather="database"></i>
+                        <span>API/Postman</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <i class="w-8 h-8 text-blue-300" data-feather="trello"></i>
+                        <span>Clickup/Trello</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <i class="w-8 h-8 text-blue-300" data-feather="image"></i>
+                        <span>Canva/Photoshop</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <i class="w-8 h-8 text-blue-300" data-feather="box"></i>
+                        <span>Hubspot</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <i class="w-8 h-8 text-blue-300" data-feather="cpu"></i>
+                        <span>N8N</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <i class="w-8 h-8 text-blue-300" data-feather="layout"></i>
+                        <span>Tailwind UI</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-center"><i data-feather="globe"
+                    class="w-6 h-6 inline-block mr-2"></i>Languages</h2>
+            <div class="glass-card p-6 rounded-xl">
+                <div class="flex flex-wrap gap-8 justify-center">
+                    <div class="flex flex-col items-center">
+                        <i class="w-8 h-8 text-blue-300" data-feather="globe"></i>
+                        <span>English: Professional working proficiency</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <i class="w-8 h-8 text-blue-300" data-feather="globe"></i>
+                        <span>Spanish: Basic knowledge</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card p-8 rounded-xl" id="contact">
+            <h2 class="text-3xl font-bold mb-8 text-center"><i data-feather="mail"
+                    class="w-6 h-6 inline-block mr-2"></i>Contact Me</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Contact Information</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <i class="mr-4 text-blue-300" data-feather="map-pin"></i>
+                            <span>01480 Villeneuve (40 min from Lyon)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="mr-4 text-blue-300" data-feather="mail"></i>
+                            <span>jcimetiere@gmail.com</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="mr-4 text-blue-300" data-feather="phone"></i>
+                            <span>06 40 98 28 68</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="mr-4 text-blue-300" data-feather="linkedin"></i>
+                            <a class="hover:text-blue-300 transition"
+                                href="https://www.linkedin.com/in/juliencimetiere/"
+                                target="_blank">linkedin.com/in/juliencimetiere</a>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Send a message</h3>
+                    <form class="space-y-4">
+                        <div>
+                            <input
+                                class="w-full bg-gray-400/50 border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Your Name" type="text" />
+                        </div>
+                        <div>
+                            <input
+                                class="w-full bg-gray-400/50 border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Your Email" type="email" />
+                        </div>
+                        <div>
+                            <textarea
+                                class="w-full bg-gray-400/50 border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Your Message" rows="4"></textarea>
+                        </div>
+                        <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition"
+                            type="submit">Send</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <footer class="mt-8 text-center text-gray-400">
+            <button id="start-game-btn"
+                class="bg-green-500 hover:bg-green-600 text-white mt-8 px-6 py-2 rounded-lg transition mb-4">
+                Game snack - Play!
+            </button>
+            <p>© 2025 Julien Cimetière. All rights reserved | <span class="text-xs text-blue-300">Powered by AI using
+                    DeepSeek -
+                    CLaude 3.5 - GPT-5
+                    mini</span>
+            </p>
+        </footer>
+    </div>
+    <!-- Game Footer -->
+    <footer id="game-footer">
+        <div id="game-container">
+            <div id="player">PM</div>
+            <div id="score">Score: 0</div>
+            <div id="instructions">←→ Move. Space=Jump. Avoid 🐛, catch 💡/🎯! ALT+Enter=Restart</div>
+            <div class="game-over">Game Over! ALT+Enter to restart.</div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const startGameBtn = document.getElementById('start-game-btn');
+            const gameFooter = document.getElementById('game-footer');
+            const gameContainer = document.getElementById('game-container');
+            const player = document.getElementById('player');
+            const scoreDisplay = document.getElementById('score');
+            const gameOverDisplay = document.querySelector('.game-over');
+
+            let score = 0;
+            let isJumping = false;
+            let gameRunning = false;
+            let playerLeft = 50;
+            let playerBottom = 20;
+            let gameSpeed = 2;
+            let gravity = 0.1;
+            let jumpForce = 10;
+            let velocityY = 0;
+            let maxJumpHeight = 80;
+            let obstacles = [];
+            let collectibles = [];
+            let bonuses = [];
+            let obstacleTimer = 0;
+            let collectibleTimer = 0;
+            let bonusTimer = 0;
+            let obstacleInterval = 150;
+            let collectibleInterval = 180;
+            let bonusInterval = 450;
+            let minObstacleInterval = 80;
+
+            startGameBtn.addEventListener('click', () => {
+                if (!gameRunning) {
+                    gameFooter.style.display = 'block';
+                    gameRunning = true;
+                    gameLoop();
+                }
+            });
+
+            function restartGame() {
+                obstacles.forEach(obs => obs.element.remove());
+                collectibles.forEach(col => col.element.remove());
+                bonuses.forEach(bonus => bonus.element.remove());
+                obstacles = [];
+                collectibles = [];
+                bonuses = [];
+                score = 0;
+                scoreDisplay.textContent = `Score: ${score}`;
+                gameSpeed = 2;
+                obstacleInterval = 150;
+                collectibleInterval = 180;
+                bonusInterval = 450;
+                playerLeft = 50;
+                playerBottom = 20;
+                player.style.left = playerLeft + 'px';
+                player.style.bottom = playerBottom + 'px';
+                gameOverDisplay.style.display = 'none';
+                gameRunning = true;
+                gameLoop();
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (!gameRunning && e.altKey && e.key === 'Enter') {
+                    restartGame();
+                    return;
+                }
+                if (!gameRunning) return;
+                // Gauche/Droite
+                if (e.code === 'ArrowLeft' && playerLeft > 0) {
+                    playerLeft -= 20;
+                    player.style.left = playerLeft + 'px';
+                }
+                if (e.code === 'ArrowRight' && playerLeft < gameContainer.offsetWidth - 30) {
+                    playerLeft += 20;
+                    player.style.left = playerLeft + 'px';
+                }
+                // Espace pour sauter
+                if (e.code === 'Space' && !isJumping) {
+                    isJumping = true;
+                    velocityY = jumpForce;
+                }
+            });
+
+            function updateJump() {
+                if (isJumping) {
+                    playerBottom += velocityY;
+                    if (playerBottom > maxJumpHeight) {
+                        playerBottom = maxJumpHeight;
+                        velocityY = 0;
+                    }
+                    velocityY -= gravity;
+                    player.style.bottom = playerBottom + 'px';
+                    if (playerBottom <= 20) {
+                        playerBottom = 20;
+                        player.style.bottom = playerBottom + 'px';
+                        isJumping = false;
+                        velocityY = 0;
+                    }
+                }
+            }
+
+            function createObstacle() {
+                if (!gameRunning) return;
+                const y = 20;
+                const obstacle = document.createElement('div');
+                obstacle.className = 'obstacle';
+                obstacle.innerHTML = '🐛';
+                obstacle.style.left = gameContainer.offsetWidth + 'px';
+                obstacle.style.bottom = y + 'px';
+                gameContainer.appendChild(obstacle);
+                obstacles.push({ element: obstacle, x: gameContainer.offsetWidth, y });
+            }
+
+            function createCollectible() {
+                if (!gameRunning) return;
+                const y = 20;
+                const collectible = document.createElement('div');
+                collectible.className = 'collectible';
+                collectible.innerHTML = '💡';
+                collectible.style.left = gameContainer.offsetWidth + 'px';
+                collectible.style.bottom = y + 'px';
+                gameContainer.appendChild(collectible);
+                collectibles.push({ element: collectible, x: gameContainer.offsetWidth, y });
+            }
+
+            function createBonus() {
+                if (!gameRunning) return;
+                const y = 20 + Math.floor(Math.random() * 50);
+                const bonus = document.createElement('div');
+                bonus.className = 'bonus';
+                bonus.innerHTML = '🎯';
+                bonus.style.left = gameContainer.offsetWidth + 'px';
+                bonus.style.bottom = y + 'px';
+                gameContainer.appendChild(bonus);
+                bonuses.push({ element: bonus, x: gameContainer.offsetWidth, y });
+            }
+
+            function updatePositions() {
+                if (!gameRunning) return;
+                obstacles.forEach((obs, index) => {
+                    obs.x -= gameSpeed;
+                    obs.element.style.left = obs.x + 'px';
+                    if (
+                        obs.x < playerLeft + 20 &&
+                        obs.x + 20 > playerLeft &&
+                        obs.y === playerBottom
+                    ) {
+                        endGame();
+                    }
+                    if (obs.x < -20) {
+                        obs.element.remove();
+                        obstacles.splice(index, 1);
+                    }
+                });
+                collectibles.forEach((col, index) => {
+                    col.x -= gameSpeed;
+                    col.element.style.left = col.x + 'px';
+                    if (
+                        col.x < playerLeft + 20 &&
+                        col.x + 20 > playerLeft &&
+                        col.y === playerBottom
+                    ) {
+                        score += 10;
+                        scoreDisplay.textContent = `Score: ${score}`;
+                        col.element.remove();
+                        collectibles.splice(index, 1);
+                    }
+                    if (col.x < -20) {
+                        col.element.remove();
+                        collectibles.splice(index, 1);
+                    }
+                });
+                bonuses.forEach((bonus, index) => {
+                    bonus.x -= gameSpeed;
+                    bonus.element.style.left = bonus.x + 'px';
+                    if (
+                        bonus.x < playerLeft + 20 &&
+                        bonus.x + 20 > playerLeft &&
+                        Math.abs(bonus.y - playerBottom) < 20
+                    ) {
+                        score += 30;
+                        scoreDisplay.textContent = `Score: ${score}`;
+                        bonus.element.remove();
+                        bonuses.splice(index, 1);
+                    }
+                    if (bonus.x < -20) {
+                        bonus.element.remove();
+                        bonuses.splice(index, 1);
+                    }
+                });
+            }
+
+            function endGame() {
+                gameRunning = false;
+                gameOverDisplay.style.display = 'block';
+            }
+
+            function gameLoop() {
+                if (!gameRunning) return;
+                updateJump();
+                updatePositions();
+                obstacleTimer++;
+                collectibleTimer++;
+                bonusTimer++;
+
+                if (obstacleTimer >= obstacleInterval) {
+                    createObstacle();
+                    obstacleTimer = 0;
+                    if (score >= 50 && obstacleInterval > minObstacleInterval) {
+                        obstacleInterval = Math.max(minObstacleInterval, obstacleInterval - 0.5);
+                    }
+                }
+                if (collectibleTimer >= collectibleInterval) {
+                    createCollectible();
+                    collectibleTimer = 0;
+                    if (score >= 100 && collectibleInterval > 120) {
+                        collectibleInterval = Math.max(120, collectibleInterval - 0.3);
+                    }
+                }
+                if (bonusTimer >= bonusInterval) {
+                    createBonus();
+                    bonusTimer = 0;
+                }
+                if (score >= 100 && gameSpeed < 3) gameSpeed = 3;
+                if (score >= 200 && gameSpeed < 4) gameSpeed = 4;
+                if (score >= 350 && gameSpeed < 5) gameSpeed = 5;
+                if (score >= 500 && gameSpeed < 6) gameSpeed = 6;
+                if (score >= 700 && gameSpeed < 7) gameSpeed = 7;
+                requestAnimationFrame(gameLoop);
+            }
+
+
+
+
+            // Theme switching logic (accessible, supports system preference)
+            (function () {
+                const themeSwitch = document.getElementById('theme-switch');
+                const iconSun = document.getElementById('icon-sun');
+                const iconMoon = document.getElementById('icon-moon');
+                const body = document.body;
+                const vantaBg = document.getElementById('vanta-bg');
+                let vantaEffect = null;
+
+                function initVanta() {
+                    if (!vantaEffect && typeof VANTA !== 'undefined' && VANTA.NET) {
+                        try {
+                            vantaEffect = VANTA.NET({
+                                el: "#vanta-bg",
+                                mouseControls: true,
+                                touchControls: true,
+                                gyroControls: false,
+                                minHeight: 200.00,
+                                minWidth: 200.00,
+                                scale: 1.00,
+                                scaleMobile: 1.00,
+                                color: 0x3b82f6,
+                                backgroundColor: 0x111827,
+                                points: 12.00,
+                                maxDistance: 22.00,
+                                spacing: 18.00
+                            });
+                        } catch (e) {
+                            console.warn('Vanta init failed', e);
+                            vantaEffect = null;
+                        }
+                    }
+                }
+
+                function destroyVanta() {
+                    if (vantaEffect && typeof vantaEffect.destroy === 'function') {
+                        try { vantaEffect.destroy(); } catch (e) { console.warn('Vanta destroy failed', e); }
+                        vantaEffect = null;
+                    }
+                }
+
+                function updateUIForTheme(theme) {
+                    // theme: 'light' | 'dark'
+                    // Inverted UX: show Sun when in DARK mode (so user can switch to light), show Moon when in LIGHT mode
+                    iconSun.classList.toggle('hidden', theme !== 'dark');
+                    iconMoon.classList.toggle('hidden', theme !== 'light');
+                    themeSwitch.setAttribute('aria-pressed', theme === 'dark');
+                    // Update accessible title to indicate action (switch to opposite)
+                    themeSwitch.title = theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+                }
+
+                function applyTheme(choice) {
+                    // choice: 'light' | 'dark' | null (null = follow system)
+                    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    let effective;
+                    if (choice === 'light' || choice === 'dark') effective = choice; else effective = prefersDark ? 'dark' : 'light';
+
+                    if (effective === 'light') {
+                        body.classList.add('light-theme');
+                        destroyVanta();
+                        if (vantaBg) vantaBg.style.display = 'none';
+                        document.documentElement.style.backgroundColor = '#f3f4f6';
+                    } else {
+                        body.classList.remove('light-theme');
+                        if (vantaBg) vantaBg.style.display = 'block';
+                        initVanta();
+                        document.documentElement.style.backgroundColor = '#111827';
+                    }
+
+                    updateUIForTheme(effective);
+                }
+
+                // Read persisted theme: only 'light' or 'dark' stored. If none, follow system (transparent)
+                const saved = localStorage.getItem('theme');
+                const initial = (saved === 'light' || saved === 'dark') ? saved : null;
+                applyTheme(initial);
+
+                // React to OS changes only when no explicit saved preference
+                if (window.matchMedia) {
+                    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+                    const handler = () => {
+                        const current = localStorage.getItem('theme');
+                        if (!current) applyTheme(null);
+                    };
+                    if (mq.addEventListener) mq.addEventListener('change', handler); else mq.addListener(handler);
+                }
+
+                // Toggle behavior: if saved preference exists, switch to the opposite and persist; if none, persist opposite of current effective
+                themeSwitch.addEventListener('click', () => {
+                    const savedPref = localStorage.getItem('theme');
+                    // determine current effective theme
+                    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    const effective = savedPref === 'light' || savedPref === 'dark' ? savedPref : (prefersDark ? 'dark' : 'light');
+                    const next = effective === 'dark' ? 'light' : 'dark';
+                    localStorage.setItem('theme', next);
+                    applyTheme(next);
+                });
+
+                // Ensure rest of icons (feather) are replaced
+                if (window.feather && typeof window.feather.replace === 'function') {
+                    try { feather.replace(); } catch (e) { /* ignore */ }
+                }
+
+                // Show more experience logic - toggles expanded class so CSS handles layout/positioning
+                const experienceContainer = document.getElementById('experience-container');
+                const experienceFade = document.getElementById('experience-fade');
+                const showMoreBtn = document.getElementById('show-more-btn');
+                if (showMoreBtn && experienceContainer && experienceFade) {
+                    showMoreBtn.addEventListener('click', () => {
+                        const isExpanded = experienceContainer.classList.toggle('expanded');
+                        const sectionAnchor = document.getElementById('experience');
+                        const sectionHeading = sectionAnchor ? sectionAnchor.querySelector('h2') : null;
+                        if (isExpanded) {
+                            // When expanded, hide the fade and update button
+                            experienceFade.style.opacity = '0';
+                            showMoreBtn.textContent = 'Show less';
+                            showMoreBtn.setAttribute('aria-expanded', 'true');
+                        } else {
+                            // When collapsed, restore constrained height and fade
+                            experienceFade.style.opacity = '1';
+                            experienceContainer.style.maxHeight = '500px';
+                            showMoreBtn.textContent = 'Show more';
+                            showMoreBtn.setAttribute('aria-expanded', 'false');
+
+                            // Smooth scroll back to the section anchor and focus the heading for accessibility
+                            if (sectionAnchor) {
+                                sectionAnchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                if (sectionHeading) {
+                                    // ensure it can receive focus
+                                    sectionHeading.setAttribute('tabindex', '-1');
+                                    sectionHeading.focus({ preventScroll: true });
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // JS fallback for smooth-scrolling anchor links (for browsers without CSS support)
+                (function () {
+                    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                    if (prefersReduced) return; // respect user preference
+
+                    // Only apply if browser doesn't support CSS scroll-behavior
+                    const supportsCssSmooth = 'scrollBehavior' in document.documentElement.style;
+                    if (supportsCssSmooth) return;
+
+                    document.addEventListener('click', function (e) {
+                        const el = e.target.closest && e.target.closest('a[href^="#"]');
+                        if (!el) return;
+                        const hash = el.getAttribute('href');
+                        if (!hash || hash === '#') return;
+                        const target = document.querySelector(hash);
+                        if (!target) return;
+                        e.preventDefault();
+                        // compute target top relative to document
+                        const top = target.getBoundingClientRect().top + window.pageYOffset;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                        // set focus after a short timeout (allow scroll to start)
+                        setTimeout(() => {
+                            if (target.tagName.toLowerCase() === 'h2' || target.tabIndex >= 0) {
+                                target.setAttribute('tabindex', '-1');
+                                target.focus({ preventScroll: true });
+                            } else {
+                                const heading = target.querySelector && target.querySelector('h2');
+                                if (heading) {
+                                    heading.setAttribute('tabindex', '-1');
+                                    heading.focus({ preventScroll: true });
+                                }
+                            }
+                        }, 400);
+                    });
+                })();
+
+                // Language floating pill: two buttons (FR / EN) with active state and persistence
+                (function () {
+                    try {
+                        const btnFr = document.getElementById('lang-fr');
+                        const btnEn = document.getElementById('lang-en');
+
+                        function setActive(lang) {
+                            if (lang === 'en') {
+                                btnEn.classList.add('bg-blue-500', 'text-white');
+                                btnEn.classList.remove('bg-gray-800/50', 'text-gray-200');
+                                btnFr.classList.remove('bg-blue-500', 'text-white');
+                                btnFr.classList.add('bg-gray-800/50', 'text-gray-200');
+                                btnEn.setAttribute('aria-pressed', 'true');
+                                btnFr.setAttribute('aria-pressed', 'false');
+                            } else {
+                                btnFr.classList.add('bg-blue-500', 'text-white');
+                                btnFr.classList.remove('bg-gray-800/50', 'text-gray-200');
+                                btnEn.classList.remove('bg-blue-500', 'text-white');
+                                btnEn.classList.add('bg-gray-800/50', 'text-gray-200');
+                                btnFr.setAttribute('aria-pressed', 'true');
+                                btnEn.setAttribute('aria-pressed', 'false');
+                            }
+                        }
+
+                        const stored = localStorage.getItem('lang');
+                        const path = window.location.pathname.split('/').pop() || 'index-EN.html';
+                        const current = stored === 'en' || path.toLowerCase() === 'index-en.html' ? 'en' : 'fr';
+                        setActive(current);
+
+                        // Click handlers: persist choice and navigate only if needed
+                        btnFr.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            localStorage.setItem('lang', 'fr');
+                            setActive('fr');
+                            if (window.location.pathname.split('/').pop() !== 'index.html') {
+                                window.location.href = 'index.html';
+                            }
+                        });
+                        btnEn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            localStorage.setItem('lang', 'en');
+                            setActive('en');
+                            if (window.location.pathname.split('/').pop() !== 'index-EN.html') {
+                                window.location.href = 'index-EN.html';
+                            }
+                        });
+
+                        // Update active state when navigating back/forward
+                        window.addEventListener('popstate', () => {
+                            const p = window.location.pathname.split('/').pop() || 'index-EN.html';
+                            setActive(p.toLowerCase() === 'index-en.html' ? 'en' : 'fr');
+                        });
+                    } catch (e) { /* ignore */ }
+                })();
+
+                // Mobile nav toggle
+                (function () {
+                    try {
+                        const navToggle = document.getElementById('nav-toggle');
+                        const mobileNav = document.getElementById('mobile-nav');
+                        if (!navToggle || !mobileNav) return;
+                        navToggle.addEventListener('click', () => {
+                            const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+                            navToggle.setAttribute('aria-expanded', String(!expanded));
+                            mobileNav.classList.toggle('hidden');
+                            mobileNav.setAttribute('aria-hidden', String(expanded));
+                        });
+                        // close mobile nav when a link is clicked
+                        mobileNav.addEventListener('click', (e) => {
+                            const a = e.target.closest && e.target.closest('a');
+                            if (a) {
+                                mobileNav.classList.add('hidden');
+                                mobileNav.setAttribute('aria-hidden', 'true');
+                                navToggle.setAttribute('aria-expanded', 'false');
+                            }
+                        });
+                    } catch (e) { /* ignore */ }
+                })();
+
+                // Main nav active state: highlight link by hash/section
+                (function () {
+                    try {
+                        const links = Array.from(document.querySelectorAll('#main-nav .nav-link'));
+                        function setActiveByHash() {
+                            const hash = window.location.hash || '#experience';
+                            links.forEach((a) => {
+                                const href = a.getAttribute('href');
+                                if (href === hash) a.classList.add('active'); else a.classList.remove('active');
+                            });
+                        }
+                        // update on load and hash change
+                        setActiveByHash();
+                        window.addEventListener('hashchange', setActiveByHash);
+
+                        // optionally update on click (smooth UX)
+                        links.forEach(a => a.addEventListener('click', () => {
+                            links.forEach(l => l.classList.remove('active'));
+                            a.classList.add('active');
+                        }));
+                    } catch (e) { /* ignore */ }
+                })();
+            })();
+        });
+    </script>
+</body>
+
+</html>
